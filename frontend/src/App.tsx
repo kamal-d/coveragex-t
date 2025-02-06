@@ -1,7 +1,8 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Task from "./Task";
 
+// window.React = React;
 export default function App() {
   interface Task {
     id: string;
@@ -15,7 +16,8 @@ export default function App() {
 
   function fetchTasks() {
     axios
-      .get("http://coverage-back.test/api/tasks")
+      .get("http://localhost:8000/api/tasks")
+      // .get("http://localhost:8000/api/tasks")
       .then((response) => {
         setTasks(response.data);
       })
@@ -37,7 +39,7 @@ export default function App() {
 
   function addTask(taskTitle: string, taskDescription: string) {
     axios
-      .post("http://coverage-back.test/api/tasks", {
+      .post("http://localhost:8000/api/tasks", {
         title: taskTitle,
         description: taskDescription,
       })
@@ -54,7 +56,7 @@ export default function App() {
 
   function deleteTask(id: any) {
     axios
-      .delete(`http://coverage-back.test/api/tasks/${id}`)
+      .delete(`http://localhost:8000/api/tasks/${id}`)
       .then((response) => {
         if (response.status === 200) {
           fetchTasks();

@@ -1,10 +1,10 @@
-import React from "react";
+// import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import axios from "axios";
 import App from "../src/App";
 
 // jest.mock("axios");
-
+// global.React = React;
 describe("App Component", () => {
 
   test("renders the App component", async () => {

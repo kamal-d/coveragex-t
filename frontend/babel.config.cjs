@@ -3,7 +3,7 @@ module.exports = {
   presets: [
     ["@babel/preset-env", { targets: { node: "current" } }],
     "@babel/preset-typescript",
-    "@babel/preset-react", // Adds support for JSX
+    ["@babel/preset-react", {"runtime" : "automatic"}] // Adds support for JSX
   ],
   plugins: [],
 };

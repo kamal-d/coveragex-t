@@ -1,4 +1,5 @@
-import React from "react";
+// import React from "react";
+// window.React = React;
 
 interface TaskProps {
   id: string;
