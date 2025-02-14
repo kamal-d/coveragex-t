@@ -1,39 +1,38 @@
-# Use the official PHP image as the base image
-FROM php:8.2-fpm
+FROM php:8.2-apache
 
-# Set working directory
-WORKDIR /var/www
+WORKDIR /var/www/html
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
+ARG WWWGROUP
+
+
+RUN apt-get update && \
+    apt-get install -y \
     git \
-    curl \
+    libzip-dev \
     libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip
+    libicu-dev \
+    libpq-dev \
+    libmagickwand-dev
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+# RUN pecl install imagick && docker-php-ext-enable imagick
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo_mysql zip exif pcntl bcmath gd
+RUN a2enmod rewrite
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
 
-# Copy existing application directory contents
-COPY . /var/www
 
-# Copy existing application directory permissions
-COPY --chown=www-data:www-data . /var/www
 
-# Change current user to www
-USER www-data
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Expose port 9000 and start php-fpm server
-EXPOSE 9000
-CMD ["php-fpm"]
+COPY . /var/www/html
+RUN composer install --prefer-dist --no-scripts --no-progress --no-suggest
+RUN cp .env.example .env
+RUN php artisan key:generate
+
+RUN chown -R www-data:www-data /var/www/html
+
+RUN php artisan config:cache
+
+EXPOSE 80
+CMD ["apache2-foreground"]

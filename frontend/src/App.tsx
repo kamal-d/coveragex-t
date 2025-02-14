@@ -13,10 +13,12 @@ export default function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const baseUrl = import.meta.env.VITE_BASE_URL;
+  console.log(baseUrl);
 
   function fetchTasks() {
     axios
-      .get("http://localhost:8000/api/tasks")
+      .get(baseUrl)
       // .get("http://localhost:8000/api/tasks")
       .then((response) => {
         setTasks(response.data);
@@ -39,7 +41,7 @@ export default function App() {
 
   function addTask(taskTitle: string, taskDescription: string) {
     axios
-      .post("http://localhost:8000/api/tasks", {
+      .post(baseUrl, {
         title: taskTitle,
         description: taskDescription,
       })
@@ -56,7 +58,7 @@ export default function App() {
 
   function deleteTask(id: any) {
     axios
-      .delete(`http://localhost:8000/api/tasks/${id}`)
+      .delete(baseUrl+`/${id}`)
       .then((response) => {
         if (response.status === 200) {
           fetchTasks();
